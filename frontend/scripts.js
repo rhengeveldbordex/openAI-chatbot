@@ -5,7 +5,7 @@ function sendMessage() {
     addToChat(userInput, 'user');
     document.getElementById('user-input').value = '';
 
-    fetch('/ask', {
+    fetch('http://localhost:3000/ask', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

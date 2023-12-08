@@ -1,44 +1,40 @@
-require('dotenv').config(); // laad dotenv
-
+require('dotenv').config();
 const express = require('express');
-const openai = require('openai');
+const OpenAI = require('openai');
 
 const app = express();
 const port = 3000;
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // gebruik de omgevingsvariabele
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+});
 
-const openaiClient = new openai.OpenAIAPI(OPENAI_API_KEY);
-
-const express = require('express');
-const openai = require('openai');
-
-const app = express();
-const port = 3000;
-
-const OPENAI_API_KEY = 'YOUR_API_KEY';
-const openaiClient = new openai.OpenAIAPI(OPENAI_API_KEY);
+// CORS-instellingen
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost'); // Hier kun je meerdere domeinen specificeren als je dat nodig hebt (bijv. http://localhost:8080)
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  next();
+});
 
 app.use(express.json());
 
 app.post('/ask', async (req, res) => {
-    const { question } = req.body;
+  const { question } = req.body;
 
-    try {
-        const response = await openaiClient.chat.create({
-            messages: [
-                { role: 'system', content: 'You are a helpful assistant.' },
-                { role: 'user', content: question },
-            ],
-            model: 'gpt-3.5-turbo',
-        });
+  try {
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: 'user', content: question }],
+      model: 'gpt-3.5-turbo',
+    });
 
-        res.json({ answer: response.data.choices[0].message.content });
-    } catch (error) {
-        res.status(500).json({ error: 'Something went wrong' });
-    }
+    res.json({ answer: chatCompletion.choices[0].message.content });
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 });
 
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });

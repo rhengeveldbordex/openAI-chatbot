@@ -7,7 +7,14 @@
 </head>
 <body>
     <div class="chat-container">
-        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-box" id="chat-box">
+            <!-- Voorbeeld van een chatbericht met een afbeelding -->
+            <div class="message bot">
+                <img src="PD.png" alt="Chatbot Image" class="bot-image">
+                <div class="text-bubble">Dit is een bericht van de chatbot</div>
+            </div>
+        </div>
+        <div id="typing-loader" class="typing-loader"></div>
         <input type="text" id="user-input" placeholder="Stel een vraag..." />
         <button onclick="sendMessage()">Verstuur</button>
     </div>
